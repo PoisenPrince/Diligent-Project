@@ -8,26 +8,36 @@ A full-stack e-commerce starter kit built for rapid prototyping at hackathons. I
 - **DevOps:** Docker, docker-compose, dotenv, nodemon
 
 ## Getting Started (Local Node)
-1. Install dependencies:
-   ```bash
-   cd backend && npm install
-   cd ../frontend && npm install
-   ```
-2. Copy environment files:
-   ```bash
-   cp ../.env.example ../.env
-   cp .env.example .env
-   cd ../backend && cp .env.example .env
-   ```
-3. Start services:
-   ```bash
-   # Terminal 1 - Backend (uses nodemon in dev)
-   npm run dev
+```bash
+# From repo root:
+# 1) Install backend deps
+cd backend
+npm install
 
-   # Terminal 2 - Frontend
-   cd ../frontend
-   npm start
-   ```
+# 2) Install frontend deps (open a new terminal or go back to repo root)
+cd ../frontend
+npm install
+cd ..
+
+# 3) Create .env files (copy examples)
+cp .env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+
+# 4) Ensure MongoDB is running (local or docker). Example using Docker:
+docker run -d --name diligent-mongo -p 27017:27017 mongo:6
+
+# 5) Seed the backend database
+cd backend
+npm run seed
+
+# 6) Start backend (dev)
+npm run dev
+
+# 7) Start frontend (in separate terminal)
+cd ../frontend
+npm start
+```
 
 ## Getting Started (Docker Compose)
 ```bash
@@ -35,17 +45,17 @@ cp .env.example .env
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 
-# Build and start all services
 docker-compose up --build
 ```
-The frontend will be available at [http://localhost:3000](http://localhost:3000) and the backend API at [http://localhost:5000/api](http://localhost:5000/api).
+The frontend will be available at [http://localhost:3000](http://localhost:3000) and the backend API at [http://localhost:5000/api](http://localhost:5000/api). If you customise the compose file, ensure `REACT_APP_API_URL` points to `http://backend:5000/api` so the frontend can reach the API container.
 
 ## Environment Variables
 - **Root** `.env`
-  - No variables required yet (reserved for future orchestration)
+  - Reserved for future shared variables; copy `.env.example` if needed.
 - **Backend** `.env`
   - `MONGO_URI=mongodb://localhost:27017/ecommerce_demo`
   - `PORT=5000`
+  - `JWT_SECRET=replace_with_a_random_secret`
 - **Frontend** `.env`
   - `REACT_APP_API_URL=http://localhost:5000/api`
 
@@ -55,7 +65,7 @@ Populate demo products with:
 cd backend
 npm run seed
 ```
-This connects to the configured MongoDB instance and inserts 10 sample products.
+This connects to the configured MongoDB instance and inserts 10 sample products, then closes the database connection cleanly.
 
 ## Testing
 ```bash

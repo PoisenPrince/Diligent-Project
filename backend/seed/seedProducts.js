@@ -1,10 +1,8 @@
 /* eslint-disable no-console */
-const dotenv = require('dotenv');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const connectDB = require('../config/db');
 const Product = require('../models/Product');
-
-dotenv.config();
 
 const products = [
   {
@@ -110,16 +108,24 @@ const products = [
 ];
 
 async function seed() {
+  let exitCode = 0;
   try {
     await connectDB();
     await Product.deleteMany();
     await Product.insertMany(products);
     console.log('🌱 Seed data inserted successfully');
   } catch (error) {
+    exitCode = 1;
     console.error('Seed error:', error);
   } finally {
-    await mongoose.connection.close();
-    process.exit(0);
+    try {
+      await mongoose.connection.close();
+      console.log('🔌 MongoDB connection closed');
+    } catch (closeError) {
+      exitCode = 1;
+      console.error('Error closing MongoDB connection:', closeError);
+    }
+    process.exit(exitCode);
   }
 }
 
