@@ -71,7 +71,7 @@ sh
 Copy code
 cd backend
 npm install
-Create .env file:
+Create .env file: *Note that .env contains the mongo connection uri which is private
 
 ini
 Copy code
